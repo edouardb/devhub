@@ -12,6 +12,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/renstrom/fuzzysearch/fuzzy"
 
+	"github.com/scaleway/devhub/pkg/image"
 	"github.com/scaleway/devhub/pkg/manifest"
 	"github.com/scaleway/scaleway-cli/pkg/api"
 )
@@ -37,7 +38,6 @@ func (c *Cache) GetImageByName(name string) []*ImageMapping {
 	found := []*ImageMapping{}
 	for idx, image := range c.Mapping.Images {
 		if image.MatchName(name) {
-			fmt.Println(image, name)
 			found = append(found, &c.Mapping.Images[idx])
 		}
 	}
@@ -55,7 +55,7 @@ func (c *Cache) MapImages() {
 	logrus.Infof("Mapping images")
 	for _, manifestImage := range c.Manifest.Images {
 		imageMapping := ImageMapping{
-			ManifestName: manifestImage.Name,
+			ManifestName: manifestImage.FullName(),
 		}
 		manifestImageName := ImageCodeName(manifestImage.Name)
 		for _, apiImage := range *c.Api.Images {
@@ -82,10 +82,23 @@ func (i *ImageMapping) MatchName(input string) bool {
 	if input == i.ApiUUID {
 		return true
 	}
-	if fuzzy.RankMatch(i.ManifestName, input) > -1 {
+	if fuzzy.RankMatch(input, i.ManifestName) > -1 {
 		return true
 	}
 	return false
+}
+
+func (i *ImageMapping) Api(cache Cache) *api.ScalewayImage {
+	for _, image := range *cache.Api.Images {
+		if image.Identifier == i.ApiUUID {
+			return &image
+		}
+	}
+	return nil
+}
+
+func (i *ImageMapping) Manifest(cache Cache) scwImage.Image {
+	return cache.Manifest.Images[i.ManifestName]
 }
 
 func ImageCodeName(inputName string) string {
@@ -162,7 +175,9 @@ func imageEndpoint(c *gin.Context) {
 		})
 	case 1:
 		c.JSON(http.StatusOK, gin.H{
-			"image": images[0],
+			"mapping":  images[0],
+			"manifest": images[0].Manifest(cache),
+			"api":      images[0].Api(cache),
 		})
 	default:
 		c.JSON(http.StatusNotFound, gin.H{
