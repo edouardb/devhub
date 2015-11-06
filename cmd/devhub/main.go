@@ -21,7 +21,7 @@ var cache Cache
 
 type Cache struct {
 	Mapping struct {
-		Images []ImageMapping `json:"mapped_images"`
+		Images []*ImageMapping `json:"mapped_images"`
 	} `json:"mapping"`
 	Manifest *scwManifest.Manifest `json:"manifest"`
 	Api      struct {
@@ -36,9 +36,9 @@ func NewCache() Cache {
 
 func (c *Cache) GetImageByName(name string) []*ImageMapping {
 	found := []*ImageMapping{}
-	for idx, image := range c.Mapping.Images {
+	for _, image := range c.Mapping.Images {
 		if image.MatchName(name) {
-			found = append(found, &c.Mapping.Images[idx])
+			found = append(found, image)
 		}
 	}
 	return found
@@ -50,13 +50,14 @@ func (c *Cache) MapImages() {
 		return
 	}
 
-	c.Mapping.Images = make([]ImageMapping, 0)
+	c.Mapping.Images = make([]*ImageMapping, 0)
 
 	logrus.Infof("Mapping images")
 	for _, manifestImage := range c.Manifest.Images {
 		imageMapping := ImageMapping{
 			ManifestName: manifestImage.FullName(),
 		}
+		imageMapping.Objects.Manifest = manifestImage
 		manifestImageName := ImageCodeName(manifestImage.Name)
 		for _, apiImage := range *c.Api.Images {
 			apiImageName := ImageCodeName(apiImage.Name)
@@ -64,41 +65,45 @@ func (c *Cache) MapImages() {
 				imageMapping.ApiUUID = apiImage.Identifier
 				imageMapping.RankMatch = rankMatch
 				imageMapping.Found++
+				imageMapping.Objects.Api = &apiImage
 			}
 		}
-		c.Mapping.Images = append(c.Mapping.Images, imageMapping)
+		c.Mapping.Images = append(c.Mapping.Images, &imageMapping)
 	}
 	logrus.Infof("Images mapped")
 }
 
 type ImageMapping struct {
-	ApiUUID      string
-	ManifestName string
-	RankMatch    int
-	Found        int
+	ApiUUID      string `json:"api_uuid"`
+	ManifestName string `json:"manifest_name"`
+	RankMatch    int    `json:"rank_match"`
+	Found        int    `json:"found"`
+
+	Objects struct {
+		Api      *api.ScalewayImage `json:"api"`
+		Manifest *scwImage.Image    `json:"manifest"`
+	} `json:"objects"`
 }
 
 func (i *ImageMapping) MatchName(input string) bool {
 	if input == i.ApiUUID {
 		return true
 	}
-	if fuzzy.RankMatch(ImageCodeName(input), ImageCodeName(i.ManifestName)) > -1 {
+
+	input = ImageCodeName(input)
+
+	if fuzzy.RankMatch(input, ImageCodeName(i.ManifestName)) > -1 {
 		return true
 	}
-	return false
-}
 
-func (i *ImageMapping) Api(cache Cache) *api.ScalewayImage {
-	for _, image := range *cache.Api.Images {
-		if image.Identifier == i.ApiUUID {
-			return &image
+	for _, tag := range i.Objects.Manifest.Tags {
+		nameWithTag := ImageCodeName(fmt.Sprintf("%s-%s", i.Objects.Manifest.Name, tag))
+		if fuzzy.RankMatch(input, nameWithTag) > -1 {
+			return true
 		}
 	}
-	return nil
-}
 
-func (i *ImageMapping) Manifest(cache Cache) scwImage.Image {
-	return cache.Manifest.Images[i.ManifestName]
+	return false
 }
 
 func ImageCodeName(inputName string) string {
@@ -175,9 +180,7 @@ func imageEndpoint(c *gin.Context) {
 		})
 	case 1:
 		c.JSON(http.StatusOK, gin.H{
-			"mapping":  images[0],
-			"manifest": images[0].Manifest(cache),
-			"api":      images[0].Api(cache),
+			"image": images[0],
 		})
 	default:
 		c.JSON(http.StatusNotFound, gin.H{
