@@ -82,7 +82,7 @@ func (i *ImageMapping) MatchName(input string) bool {
 	if input == i.ApiUUID {
 		return true
 	}
-	if fuzzy.RankMatch(input, i.ManifestName) > -1 {
+	if fuzzy.RankMatch(ImageCodeName(input), ImageCodeName(i.ManifestName)) > -1 {
 		return true
 	}
 	return false
