@@ -31,16 +31,16 @@
           </thead>
           <tbody>
             <tr ng:repeat="i in images">
-              <td class="py2"><b>{{i.name}}</b>:{{i.tags[0]}}</td>
+              <td class="py2"><b>{{i.objects.manifest.name}}</b>:{{i.objects.manifest.tags[0]}}</td>
               <td class="py2">
-                <span class="inline py1 mr1 px1 black bg-silver rounded" ng:repeat="tag in i.tags">
+                <span class="inline py1 mr1 px1 black bg-silver rounded" ng:repeat="tag in i.objects.manifest.tags">
                   {{tag}}
                 </span>
               </td>
               <td>
-                <a href="/api/images/{{i.name}}:{{i.tags[0]}}" class="btn btn-outline">API detail</a>
-                <a href="https://{{i.repo}}/tree/{{i.branch}}/{{i.path}}" class="btn btn-outline" target="_blank">GitHub</a>
-                <a href="/images/{{i.name}}:{{i.tags[0]}}/new-server" class="btn btn-outline" target="_blank">New server</a>
+                <a href="/api/images/{{i.objects.manifest.name}}:{{i.objects.manifest.tags[0]}}" class="btn btn-outline">API detail</a>
+                <a href="https://{{i.objects.manifest.repo}}/tree/{{i.objects.manifest.branch}}/{{i.objects.manifest.path}}" class="btn btn-outline" target="_blank">GitHub</a>
+                <a href="/images/{{i.objects.manifest.name}}:{{i.objects.manifest.tags[0]}}/new-server" class="btn btn-outline" target="_blank">New server</a>
               </td>
             </tr>
           </tbody>

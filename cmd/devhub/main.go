@@ -152,7 +152,7 @@ func cacheEndpoint(c *gin.Context) {
 
 func imagesEndpoint(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
-		"images": cache.Manifest.Images,
+		"images": cache.Mapping.Images,
 	})
 }
 
