@@ -164,41 +164,62 @@ func httpGetContent(url string) (string, error) {
 	return body, nil
 }
 
+func getBadge(left, right, color string) (string, error) {
+	left = strings.Replace(left, "-", "--", -1)
+	right = strings.Replace(right, "-", "--", -1)
+	left = strings.Replace(left, " ", "_", -1)
+	right = strings.Replace(right, " ", "_", -1)
+	url := fmt.Sprintf("https://img.shields.io/badge/%s-%s-%s.svg", left, right, color)
+	body, err := memoize.Call(httpGetContent, url)
+	if err != nil {
+		return errBadge(left, fmt.Errorf("http error")), err
+	}
+	return body.(string), nil
+}
+
+func errBadge(left string, err error) string {
+	logrus.Warnf("Failed to get badge: %v", err)
+
+	// FIXME: remove the switch and compute the left width automatically
+	switch left {
+	case "build":
+		return `<svg xmlns="http://www.w3.org/2000/svg" width="115" height="20"><linearGradient id="b" x2="0" y2="100%"><stop offset="0" stop-color="#bbb" stop-opacity=".1"/><stop offset="1" stop-opacity=".1"/></linearGradient><mask id="a"><rect width="115" height="20" rx="3" fill="#fff"/></mask><g mask="url(#a)"><path fill="#555" d="M0 0h37v20H0z"/><path fill="#9f9f9f" d="M37 0h78v20H37z"/><path fill="url(#b)" d="M0 0h115v20H0z"/></g><g fill="#fff" text-anchor="middle" font-family="DejaVu Sans,Verdana,Geneva,sans-serif" font-size="11"><text x="18.5" y="15" fill="#010101" fill-opacity=".3">build</text><text x="18.5" y="14">build</text><text x="75" y="15" fill="#010101" fill-opacity=".3">inaccessible</text><text x="75" y="14">inaccessible</text></g></svg>`
+	default:
+		return strings.Replace(`<svg xmlns="http://www.w3.org/2000/svg" width="133" height="20"><linearGradient id="b" x2="0" y2="100%"><stop offset="0" stop-color="#bbb" stop-opacity=".1"/><stop offset="1" stop-opacity=".1"/></linearGradient><mask id="a"><rect width="133" height="20" rx="3" fill="#fff"/></mask><g mask="url(#a)"><path fill="#555" d="M0 0h55v20H0z"/><path fill="#9f9f9f" d="M55 0h78v20H55z"/><path fill="url(#b)" d="M0 0h133v20H0z"/></g><g fill="#fff" text-anchor="middle" font-family="DejaVu Sans,Verdana,Geneva,sans-serif" font-size="11"><text x="27.5" y="15" fill="#010101" fill-opacity=".3">{{ .Left }}</text><text x="27.5" y="14">{{ .Left }}</text><text x="93" y="15" fill="#010101" fill-opacity=".3">inaccessible</text><text x="93" y="14">inaccessible</text></g></svg>`, "{{ .Left }}", left, -1)
+	}
+}
+
 func badgeImageScwBuild(c *gin.Context) {
 	name := c.Param("name")
 	images := cache.GetImageByName(name)
+	left := "build"
+	c.Header("Content-Type", "image/svg+xml;charset=utf-8")
 	switch len(images) {
 	case 0:
-		c.JSON(http.StatusNotFound, gin.H{
-			"error": "No such image",
-		})
+		c.String(http.StatusNotFound, errBadge(left, fmt.Errorf("no such image")))
 	case 1:
 		image := images[0]
+		if image.Objects.Api == nil {
+			c.String(http.StatusInternalServerError, errBadge(left, fmt.Errorf("invalid resource")))
+			return
+		}
 		creationDate, err := time.Parse(time.RFC3339, image.Objects.Api.CreationDate)
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{
-				"error": "Cannot parse date",
-			})
+			c.String(http.StatusInternalServerError, errBadge(left, fmt.Errorf("invalid-date")))
 			return
 		}
+
 		humanTime := humanize.Time(creationDate)
 		humanTime = strings.Replace(humanTime, " ago", "", -1)
-		humanTime = strings.Replace(humanTime, " ", "--", -1)
-		url := fmt.Sprintf("https://img.shields.io/badge/build-%s-green.svg", humanTime)
-		body, err := memoize.Call(httpGetContent, url)
+
+		badge, err := getBadge(left, humanTime, "green")
 		if err != nil {
-			c.JSON(http.StatusNotFound, gin.H{
-				"error": err,
-			})
+			c.String(http.StatusInternalServerError, badge)
 			return
 		}
-		c.Header("Content-Type", "image/svg+xml;charset=utf-8")
-		c.String(http.StatusOK, body.(string))
+		c.String(http.StatusOK, badge)
 	default:
-		c.JSON(http.StatusNotFound, gin.H{
-			"error":  "Too much images are matching your request",
-			"images": images,
-		})
+		c.String(http.StatusNotFound, errBadge(left, fmt.Errorf("ambiguous name")))
 	}
 }
 
