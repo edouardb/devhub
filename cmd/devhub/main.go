@@ -9,8 +9,11 @@ import (
 	"time"
 
 	"github.com/Sirupsen/logrus"
+	"github.com/dustin/go-humanize"
 	"github.com/gin-gonic/gin"
+	"github.com/parnurzeal/gorequest"
 	"github.com/renstrom/fuzzysearch/fuzzy"
+	"github.com/shazow/memoizer"
 
 	"github.com/scaleway/devhub/pkg/image"
 	"github.com/scaleway/devhub/pkg/manifest"
@@ -18,6 +21,11 @@ import (
 )
 
 var cache Cache
+var memoize memoizer.Memoize
+
+func init() {
+	memoize = memoizer.Memoize{memoizer.NewMemoryCache()}
+}
 
 type Cache struct {
 	Mapping struct {
@@ -130,6 +138,8 @@ func main() {
 	router.GET("/api/cache", cacheEndpoint)
 
 	router.GET("/images/:name/new-server", newServerEndpoint)
+
+	router.GET("/badges/images/:name/scw-build.svg", badgeImageScwBuild)
 	// router.GET("/images/:name/badge", imageBadgeEndpoint)
 
 	Api, err := api.NewScalewayAPI("https://api.scaleway.com", "", os.Getenv("SCALEWAY_ORGANIZATION"), os.Getenv("SCALEWAY_TOKEN"))
@@ -142,6 +152,54 @@ func main() {
 	go updateScwApiBootscripts(Api, &cache)
 
 	router.Run(":4242")
+}
+
+func httpGetContent(url string) (string, error) {
+	request := gorequest.New()
+	_, body, errs := request.Get(url).End()
+	if len(errs) > 0 {
+		// FIXME: return all the errs
+		return "", errs[0]
+	}
+	return body, nil
+}
+
+func badgeImageScwBuild(c *gin.Context) {
+	name := c.Param("name")
+	images := cache.GetImageByName(name)
+	switch len(images) {
+	case 0:
+		c.JSON(http.StatusNotFound, gin.H{
+			"error": "No such image",
+		})
+	case 1:
+		image := images[0]
+		creationDate, err := time.Parse(time.RFC3339, image.Objects.Api.CreationDate)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error": "Cannot parse date",
+			})
+			return
+		}
+		humanTime := humanize.Time(creationDate)
+		humanTime = strings.Replace(humanTime, " ago", "", -1)
+		humanTime = strings.Replace(humanTime, " ", "--", -1)
+		url := fmt.Sprintf("https://img.shields.io/badge/build-%s-green.svg", humanTime)
+		body, err := memoize.Call(httpGetContent, url)
+		if err != nil {
+			c.JSON(http.StatusNotFound, gin.H{
+				"error": err,
+			})
+			return
+		}
+		c.Header("Content-Type", "image/svg+xml;charset=utf-8")
+		c.String(http.StatusOK, body.(string))
+	default:
+		c.JSON(http.StatusNotFound, gin.H{
+			"error":  "Too much images are matching your request",
+			"images": images,
+		})
+	}
 }
 
 func cacheEndpoint(c *gin.Context) {
