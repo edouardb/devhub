@@ -1,0 +1,32 @@
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <title>Scaleway Devhub</title>
+    <script type="text/javascript" src="https://code.angularjs.org/1.4.7/angular.min.js"></script>
+    <script type="text/javascript" src="/assets/app.js"></script>
+    <link href="http://d2v52k3cl9vedd.cloudfront.net/basscss/7.0.4/basscss.min.css" rel="stylesheet">
+  </head>
+  <body>
+    <section class="container px2 py3">
+      <div ng-app="devhubApp" ng-controller="ImageListCtrl" class="overflow-scroll">
+        <h3>Images</h3>
+        <table class="table-light overflow-hidden bg-white border rounded">
+          <thead class="bg-darken-1">
+            <tr>
+              <th>Name</th>
+              <th>Links</th>
+          </thead>
+          <tbody>
+            <tr ng:repeat="i in images">
+              <td><b>{{i.name}}</b>:{{i.tags[0]}}</td>
+              <td>
+                <a href="/api/images/{{i.name}}:{{i.tags[0]}}" class="btn btn-outline">detail</a>
+                <a href="/images/{{i.name}}:{{i.tags[0]}}/new-server" class="btn btn-outline">new-server</a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </body>
+</html>

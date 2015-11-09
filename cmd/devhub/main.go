@@ -21,7 +21,7 @@ var cache Cache
 
 type Cache struct {
 	Mapping struct {
-		Images []*ImageMapping `json:"mapped_images"`
+		Images []*ImageMapping `json:"images"`
 	} `json:"mapping"`
 	Manifest *scwManifest.Manifest `json:"manifest"`
 	Api      struct {
@@ -117,15 +117,15 @@ func ImageCodeName(inputName string) string {
 func main() {
 	router := gin.Default()
 
-	router.LoadHTMLGlob("templates/*")
+	router.StaticFile("/", "./static/index.html")
+	router.StaticFile("/assets/app.js", "./static/app.js")
+	// FIXME: favicon
 
-	router.GET("/", indexEndpoint)
+	router.GET("/api/images", imagesEndpoint)
+	router.GET("/api/images/:name", imageEndpoint)
+	router.GET("/api/images/:name/dockerfile", imageDockerfileEndpoint)
 
-	router.GET("/images", imagesEndpoint)
-	router.GET("/images/:name", imageEndpoint)
-	router.GET("/images/:name/dockerfile", imageDockerfileEndpoint)
-
-	router.GET("/cache", cacheEndpoint)
+	router.GET("/api/cache", cacheEndpoint)
 
 	router.GET("/images/:name/new-server", newServerEndpoint)
 	// router.GET("/images/:name/badge", imageBadgeEndpoint)
@@ -140,10 +140,6 @@ func main() {
 	// go updateScwApiBootscripts(Api, &cache)
 
 	router.Run(":4242")
-}
-
-func indexEndpoint(c *gin.Context) {
-	c.HTML(http.StatusOK, "index.tmpl", gin.H{})
 }
 
 func cacheEndpoint(c *gin.Context) {
