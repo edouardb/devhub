@@ -125,6 +125,8 @@ func main() {
 	router.GET("/api/images/:name", imageEndpoint)
 	router.GET("/api/images/:name/dockerfile", imageDockerfileEndpoint)
 
+	router.GET("/api/bootscripts", bootscriptsEndpoint)
+
 	router.GET("/api/cache", cacheEndpoint)
 
 	router.GET("/images/:name/new-server", newServerEndpoint)
@@ -137,7 +139,7 @@ func main() {
 
 	go updateManifestCron(&cache)
 	go updateScwApiImages(Api, &cache)
-	// go updateScwApiBootscripts(Api, &cache)
+	go updateScwApiBootscripts(Api, &cache)
 
 	router.Run(":4242")
 }
@@ -151,6 +153,12 @@ func cacheEndpoint(c *gin.Context) {
 func imagesEndpoint(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"images": cache.Manifest.Images,
+	})
+}
+
+func bootscriptsEndpoint(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{
+		"bootscripts": cache.Api.Bootscripts,
 	})
 }
 
