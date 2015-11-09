@@ -7,21 +7,40 @@
     <link href="http://d2v52k3cl9vedd.cloudfront.net/basscss/7.0.4/basscss.min.css" rel="stylesheet">
   </head>
   <body>
-    <section class="container px2 py3">
+    <nav class="clearfix white bg-black">
+      <section class="container">
+        <div class="sm-col">
+          <a href="/" class="btn py1">Devhub</a>
+        </div>
+        <div class="sm-col-right">
+          <a href="https://github.com/scaleway/devhub" class="btn py1">Fork me on Github</a>
+        </div>
+      </section>
+    </nav>
+
+    <section class="container">
       <div ng-app="devhubApp" ng-controller="ImageListCtrl" class="overflow-scroll">
         <h3>Images</h3>
         <table class="table-light overflow-hidden bg-white border rounded">
           <thead class="bg-darken-1">
             <tr>
               <th>Name</th>
+              <th>Tags</th>
               <th>Links</th>
+            </tr>
           </thead>
           <tbody>
             <tr ng:repeat="i in images">
-              <td><b>{{i.name}}</b>:{{i.tags[0]}}</td>
+              <td class="py2"><b>{{i.name}}</b>:{{i.tags[0]}}</td>
+              <td class="py2">
+                <span class="inline py1 mr1 px1 black bg-silver rounded" ng:repeat="tag in i.tags">
+                  {{tag}}
+                </span>
+              </td>
               <td>
-                <a href="/api/images/{{i.name}}:{{i.tags[0]}}" class="btn btn-outline">detail</a>
-                <a href="/images/{{i.name}}:{{i.tags[0]}}/new-server" class="btn btn-outline">new-server</a>
+                <a href="/api/images/{{i.name}}:{{i.tags[0]}}" class="btn btn-outline">API detail</a>
+                <a href="https://{{i.repo}}/tree/{{i.branch}}/{{i.path}}" class="btn btn-outline" target="_blank">GitHub</a>
+                <a href="/images/{{i.name}}:{{i.tags[0]}}/new-server" class="btn btn-outline" target="_blank">New server</a>
               </td>
             </tr>
           </tbody>
