@@ -6,6 +6,7 @@ import (
 	"os"
 	"regexp"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/Sirupsen/logrus"
@@ -22,6 +23,8 @@ import (
 
 var cache Cache
 var memoize memoizer.Memoize
+var httpMutex sync.Mutex
+var badgeMutex sync.Mutex
 
 func init() {
 	memoize = memoizer.Memoize{memoizer.NewMemoryCache()}
@@ -155,6 +158,9 @@ func main() {
 }
 
 func httpGetContent(url string) (string, error) {
+	httpMutex.Lock()
+	defer httpMutex.Unlock()
+	logrus.Warnf("Fetching HTTP content: %s", url)
 	request := gorequest.New()
 	_, body, errs := request.Get(url).End()
 	if len(errs) > 0 {
@@ -165,6 +171,8 @@ func httpGetContent(url string) (string, error) {
 }
 
 func getBadge(left, right, color string) (string, error) {
+	badgeMutex.Lock()
+	defer badgeMutex.Unlock()
 	left = strings.Replace(left, "-", "--", -1)
 	right = strings.Replace(right, "-", "--", -1)
 	left = strings.Replace(left, " ", "_", -1)
