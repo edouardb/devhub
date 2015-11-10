@@ -1,19 +1,24 @@
-<section class="container">
+A<section class="container">
   <div class="overflow-scroll">
     <h2 id="image">{{ image.manifest_name }}</h2>
 
     <table class="table-light overflow-hidden bg-white border rounded">
       <thead class="bg-darken-2"><tr><th colspan="2">Devhub</th></tr></thead>
       <tbody>
-        <tr><td class="bg-darken-1">New Server</td><td><a href="/images/{{image.objects.manifest.name}}:{{image.objects.manifest.tags[0]}}/new-server" target="_blank">/images/{{image.objects.manifest.name}}:{{image.objects.manifest.tags[0]}}/new-server</a></td></tr>
-        <tr><td class="bg-darken-1">Devhub API</td><td><a href="/api/images/{{image.objects.manifest.name}}:{{image.objects.manifest.tags[0]}}" target="_blank">/devhub/images/{{image.objects.manifest.name}}:{{image.objects.manifest.tags[0]}}</a></td></tr>
+        <tr><td class="bg-darken-1">New Server</td><td><a href="{{basehref}}/images/{{image.objects.manifest.name}}:{{image.objects.manifest.tags[0]}}/new-server" target="_blank">{{basehref}}/images/{{image.objects.manifest.name}}:{{image.objects.manifest.tags[0]}}/new-server</a></td></tr>
+        <tr><td class="bg-darken-1">Devhub API</td><td><a href="{{basehref}}/api/images/{{image.objects.manifest.name}}:{{image.objects.manifest.tags[0]}}" target="_blank">{{basehref}}/devhub/images/{{image.objects.manifest.name}}:{{image.objects.manifest.tags[0]}}</a></td></tr>
         <tr><td class="bg-darken-1">Scaleway image build</td><td><img src="/badges/images/{{image.manifest_name}}/scw-build.svg" /></td></tr>
       </tbody>
       <thead class="bg-darken-2"><tr><th colspan="2">GitHub</th></tr></thead>
       <tbody>
         <tr><td class="bg-darken-1">Repository</td><td><a href="https://{{image.objects.manifest.repo}}/tree/{{image.objects.manifest.branch}}/{{image.objects.manifest.path}}" target="_blank">https://{{image.objects.manifest.repo}}/tree/{{image.objects.manifest.branch}}/{{image.objects.manifest.path}}</a></td></tr>
         <tr><td class="bg-darken-1">Latest commit</td><td>coming soon...</td></tr>
+        <tr><td class="bg-darken-1">Commits</td><td>coming soon...</td></tr>
+        <tr><td class="bg-darken-1">Age</td><td>coming soon...</td></tr>
         <tr><td class="bg-darken-1">Image tools</td><td>coming soon...</td></tr>
+        <tr><td class="bg-darken-1">Maintainers</td><td>coming soon...</td></tr>
+        <tr><td class="bg-darken-1">Issues</td><td>coming soon...</td></tr>
+        <tr><td class="bg-darken-1">Pull-request</td><td>coming soon...</td></tr>
       </tbody>
       <thead class="bg-darken-2"><tr><th colspan="2">Scaleway API</th></tr></thead>
       <tbody>
@@ -34,6 +39,9 @@
             {{tag}}
           </span>
         </td></tr>
+        <tr><td class="bg-darken-1">Vendor URL</td><td>coming soon...</td></tr>
+        <tr><td class="bg-darken-1">Documentation URL</td><td>coming soon...</td></tr>
+        <tr><td class="bg-darken-1">Other flags from Makefile</td><td>coming soon...</td></tr>
       </tbody>
       <thead class="bg-darken-2"><tr><th colspan="2">Docker</th></tr></thead>
       <tbody>
@@ -45,13 +53,14 @@
       <thead class="bg-darken-2"><tr><th colspan="2">Travis</th></tr></thead>
       <tbody>
         <tr><td class="bg-darken-1">Status</td><td>coming soon...</td></tr>
+        <tr><td class="bg-darken-1">QA url</td><td>coming soon...</td></tr>
         <tr><td class="bg-darken-1">Latest build</td><td>coming soon...</td></tr>
         <tr><td class="bg-darken-1">Active PRs</td><td>coming soon...</td></tr>
       </tbody>
       <tbody>
     </table>
     <hr />
-    <h5><button class="btn btn-outline bg-darken-4 white" ng-click="show=!show">Raw API</button></h5>
-    <pre ng-show="show-raw" class="bg-darken-2 round px2 py2">{{ image | prettyJSON }}</pre>
+    <h5><button class="btn btn-outline bg-darken-4 white" ng-click="showRaw=!showRaw">Raw API</button></h5>
+    <pre ng-show="showRaw" class="bg-darken-2 round px2 py2">{{ image | prettyJSON }}</pre>
   </div>
 </section>

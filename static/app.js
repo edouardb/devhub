@@ -4,6 +4,7 @@ devhubApp.controller('MainCtrl', function($scope, $route, $routeParams, $locatio
   $scope.$route = $route;
   $scope.$location = $location;
   $scope.$routeParams = $routeParams;
+  $scope.basehref = document.location.protocol + '//' + document.location.host;
 });
 
 devhubApp.config(function($routeProvider, $locationProvider) {
