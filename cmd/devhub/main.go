@@ -130,6 +130,8 @@ func main() {
 
 	router.StaticFile("/", "./static/index.html")
 	router.StaticFile("/assets/app.js", "./static/app.js")
+	router.StaticFile("/assets/home.html", "./static/home.html")
+	router.StaticFile("/assets/image.html", "./static/image.html")
 	// FIXME: favicon
 
 	router.GET("/api/images", imagesEndpoint)

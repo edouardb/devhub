@@ -3,6 +3,7 @@
     <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
     <title>Scaleway Devhub</title>
     <script type="text/javascript" src="https://code.angularjs.org/1.4.7/angular.min.js"></script>
+    <script type="text/javascript" src="https://code.angularjs.org/1.4.7/angular-route.min.js"></script>
     <script type="text/javascript" src="/assets/app.js"></script>
     <link href="http://d2v52k3cl9vedd.cloudfront.net/basscss/7.0.4/basscss.min.css" rel="stylesheet">
   </head>
@@ -18,66 +19,19 @@
       </section>
     </nav>
 
-    <section class="container">
-      <div ng-controller="ImageListCtrl" class="overflow-scroll">
-        <h3 id="images">Images</h3>
-        <table class="table-light overflow-hidden bg-white border rounded">
-          <thead class="bg-darken-1">
-            <tr>
-              <th>Name</th>
-              <th>Tags</th>
-              <th>Badges</th>
-              <th>Links</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr ng:repeat="i in images">
-              <td class="py2"><b>{{i.objects.manifest.name}}</b>:{{i.objects.manifest.tags[0]}}</td>
-              <td class="py2">
-                <span class="inline py1 mr1 px1 black bg-silver rounded" ng:repeat="tag in i.objects.manifest.tags">
-                  {{tag}}
-                </span>
-              </td>
-              <td>
-                <img src="/badges/images/{{i.manifest_name}}/scw-build.svg" />
-              </td>
-              <td>
-                <a href="/api/images/{{i.objects.manifest.name}}:{{i.objects.manifest.tags[0]}}" class="btn btn-outline">API detail</a>
-                <a href="https://{{i.objects.manifest.repo}}/tree/{{i.objects.manifest.branch}}/{{i.objects.manifest.path}}" class="btn btn-outline" target="_blank">GitHub</a>
-                <a href="/images/{{i.objects.manifest.name}}:{{i.objects.manifest.tags[0]}}/new-server" class="btn btn-outline" target="_blank">New server</a>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
+    <div ng-controller="MainCtrl">
+      <div ng-view></div>
 
-    <section class="container">
-      <div ng-controller="BootscriptListCtrl" class="overflow-scroll">
-        <h3 id="bootscripts">Bootscripts</h3>
-        <table class="table-light overflow-hidden bg-white border rounded">
-          <thead class="bg-darken-1">
-            <tr>
-              <th>Name</th>
-              <th>Kernel</th>
-              <th>Initrd</th>
-              <th>/proc/cmdline</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr ng:repeat="i in bootscripts">
-              <td class="py2"><b class="nowrap">{{i.title}}</b></td>
-              <td class="py2"><small><span class="nowrap inline-block p1 px1 black bg-silver rounded">{{i.kernel.title}}</span></small></td>
-              <td class="py2"><small><span class="nowrap inline-block p1 px1 black bg-silver rounded">{{i.initrd.title}}</span></small></td>
-              <td class="py2">
-                <small>
-                  <span class="inline-block py1 px1 black bg-silver rounded">{{i.bootcmdargs.value}}</span>
-                </small>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
+      <hr />
+      <pre>
+        {{$route}}
+        $location.path() = {{$location.path()}}
+        $route.current.templateUrl = {{$route.current.templateUrl}}
+        $route.current.params = {{$route.current.params}}
+        $route.current.scope.name = {{$route.current.scope.name}}
+        $routeParams = {{$routeParams}}
+      </pre>
+    </div>
+
   </body>
 </html>
