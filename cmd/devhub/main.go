@@ -137,6 +137,7 @@ func main() {
 	router.GET("/api/images", imagesEndpoint)
 	router.GET("/api/images/:name", imageEndpoint)
 	router.GET("/api/images/:name/dockerfile", imageDockerfileEndpoint)
+	router.GET("/api/images/:name/makefile", imageMakefileEndpoint)
 
 	router.GET("/api/bootscripts", bootscriptsEndpoint)
 
@@ -261,6 +262,18 @@ func imageDockerfileEndpoint(c *gin.Context) {
 		})
 	}
 	c.String(http.StatusOK, dockerfile)
+}
+
+func imageMakefileEndpoint(c *gin.Context) {
+	name := c.Param("name")
+	image := cache.Manifest.Images[name]
+	makefile, err := image.GetMakefile()
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"error": fmt.Sprintf("%v", err),
+		})
+	}
+	c.String(http.StatusOK, makefile)
 }
 
 func imageEndpoint(c *gin.Context) {

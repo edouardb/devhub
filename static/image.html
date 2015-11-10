@@ -45,6 +45,7 @@ A<section class="container">
       </tbody>
       <thead class="bg-darken-2"><tr><th colspan="2">Docker</th></tr></thead>
       <tbody>
+        <tr><td class="bg-darken-1">Image</td><td><a href="https://hub.docker.com/r/scaleway/{{ image.objects.manifest.name }}/" target="_blank">https://hub.docker.com/r/scaleway/{{ image.objects.manifest.name }}:{{ image.objects.manifest.tags[0] }}</a></td></tr>
         <tr><td class="bg-darken-1">Status</td><td>coming soon...</td></tr>
         <tr><td class="bg-darken-1">FROM</td><td>coming soon...</td></tr>
         <tr><td class="bg-darken-1">FROM status</td><td>coming soon...</td></tr>
@@ -60,7 +61,11 @@ A<section class="container">
       <tbody>
     </table>
     <hr />
-    <h5><button class="btn btn-outline bg-darken-4 white" ng-click="showRaw=!showRaw">Raw API</button></h5>
-    <pre ng-show="showRaw" class="bg-darken-2 round px2 py2">{{ image | prettyJSON }}</pre>
+    <button class="btn btn-outline bg-darken-4 white" ng-click="showRawAPI()">Raw API</button>
+    <button class="btn btn-outline bg-darken-4 white" ng-click="showDockerfile()">Dockerfile</button>
+    <button class="btn btn-outline bg-darken-4 white" ng-click="showMakefile()">Makefile</button>
+    <pre ng-show="preRawAPI" class="bg-darken-2 round px2 py2">{{ image | prettyJSON }}</pre>
+    <pre ng-show="preDockerfile" class="bg-darken-2 round px2 py2">{{ dockerfile }}</pre>
+    <pre ng-show="preMakefile" class="bg-darken-2 round px2 py2">{{ makefile }}</pre>
   </div>
 </section>

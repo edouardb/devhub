@@ -26,6 +26,35 @@ devhubApp.controller('ImageDetailCtrl', function($scope, $http, $routeParams) {
   $http.get('/api/images/' + $routeParams.imageId).success(function (data) {
     $scope.image = data.image;
   });
+
+  var loadingValue = 'Loading...';
+  $scope.dockerfile = loadingValue;
+  $scope.makefile = loadingValue;
+  $scope.showRawAPI = function() {
+    $scope.preRawAPI = true;
+    $scope.preDockerfile = false;
+    $scope.preMakefile = false;
+  };
+  $scope.showDockerfile = function() {
+    $scope.preRawAPI = false;
+    $scope.preDockerfile = true;
+    $scope.preMakefile = false;
+    if ($scope.dockerfile == loadingValue) {
+      $http.get('/api/images/' + $routeParams.imageId + '/dockerfile').success(function (data) {
+        $scope.dockerfile = data;
+      });
+    }
+  };
+  $scope.showMakefile = function() {
+    $scope.preRawAPI = false;
+    $scope.preDockerfile = false;
+    $scope.preMakefile = true;
+    if ($scope.makefile == loadingValue) {
+      $http.get('/api/images/' + $routeParams.imageId + '/makefile').success(function (data) {
+        $scope.makefile = data;
+      });
+    }
+  };
 });
 
 devhubApp.controller('HomeCtrl', function($scope, $http, $routeParams) {
@@ -38,7 +67,6 @@ devhubApp.controller('HomeCtrl', function($scope, $http, $routeParams) {
     $scope.bootscripts = data.bootscripts;
   });
 });
-
 
 devhubApp.filter('prettyJSON', function() {
   function prettyPrintJson(json) {

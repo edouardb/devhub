@@ -61,3 +61,24 @@ func (i *Image) GetDockerfile() (string, error) {
 
 	return string(body), nil
 }
+
+func (i *Image) GetMakefile() (string, error) {
+	url, err := i.RawContentUrl("Makefile")
+	if err != nil {
+		return "", err
+	}
+	logrus.Infof("Fetching Makefile for %s (%s)", i.FullName(), url)
+
+	resp, err := http.Get(url)
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return "", nil
+	}
+
+	return string(body), nil
+}
