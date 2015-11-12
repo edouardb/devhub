@@ -1,4 +1,4 @@
-var devhubApp = angular.module('devhubApp', ['ngRoute', 'angularMoment', 'angular-humanize']);
+var devhubApp = angular.module('devhubApp', ['ngRoute', 'angularMoment']);
 
 devhubApp.controller('MainCtrl', function($scope, $route, $routeParams, $location) {
   $scope.$route = $route;
@@ -92,4 +92,16 @@ devhubApp.filter('prettyJSON', function() {
     return json;
   }
   return prettyPrintJson;
+});
+
+devhubApp.filter('humanBytes', function() {
+  return function(bytes, precision, base) {
+    if (isNaN(parseFloat(bytes)) || !isFinite(bytes)) return '-';
+    if (typeof precision === 'undefined') precision = 1;
+    if (typeof base === 'undefined') base = 2;
+    var units = ['bytes', 'kB', 'MB', 'GB', 'TB', 'PB'],
+        number = Math.floor(Math.log(bytes) / Math.log(1024));
+    var ceil = base > 2 ? 1000 : 1024;
+    return (bytes / Math.pow(ceil, Math.floor(number))).toFixed(precision) +  ' ' + units[number];
+  };
 });
