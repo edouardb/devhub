@@ -5,31 +5,71 @@
     <table class="table-light overflow-hidden bg-white border rounded">
       <thead class="bg-darken-2"><tr><th colspan="2">Devhub</th></tr></thead>
       <tbody>
-        <tr><td class="bg-darken-1">New Server</td><td><a href="{{basehref}}/images/{{image.objects.manifest.name}}:{{image.objects.manifest.tags[0]}}/new-server" target="_blank">{{basehref}}/images/{{image.objects.manifest.name}}:{{image.objects.manifest.tags[0]}}/new-server</a></td></tr>
-        <tr><td class="bg-darken-1">Devhub API</td><td><a href="{{basehref}}/api/images/{{image.objects.manifest.name}}:{{image.objects.manifest.tags[0]}}" target="_blank">{{basehref}}/devhub/images/{{image.objects.manifest.name}}:{{image.objects.manifest.tags[0]}}</a></td></tr>
-        <tr><td class="bg-darken-1">Scaleway image build</td><td><img src="/badges/images/{{image.manifest_name}}/scw-build.svg" /><span am-time-ago="image.objects.api.creation_date"></span></td></tr>
+        <tr><td class="bg-darken-1">New Server</td><td>
+          <a href="{{basehref}}/images/{{image.objects.manifest.name}}:{{image.objects.manifest.tags[0]}}/new-server" target="_blank">
+            {{basehref}}/images/{{image.objects.manifest.name}}:{{image.objects.manifest.tags[0]}}/new-server
+          </a>
+        </td></tr>
+        <tr><td class="bg-darken-1">Devhub API</td><td>
+          <a href="{{basehref}}/api/images/{{image.objects.manifest.name}}:{{image.objects.manifest.tags[0]}}" target="_blank">
+            {{basehref}}/devhub/images/{{image.objects.manifest.name}}:{{image.objects.manifest.tags[0]}}
+          </a>
+        </td></tr>
+        <tr><td class="bg-darken-1">Scaleway image build</td><td>
+          <div class="sm-col"><span am-time-ago="image.objects.api.creation_date" title="{{image.objects.api.creation_date}}">
+            {{image.objects.api.creation_date}}
+          </span></div>
+          <div class="sm-col-right"><img src="/badges/images/{{image.manifest_name}}/scw-build.svg" /></div>
+        </td></tr>
       </tbody>
       <thead class="bg-darken-2"><tr><th colspan="2">GitHub</th></tr></thead>
       <tbody>
-        <tr><td class="bg-darken-1">Repository</td><td><a href="https://{{image.objects.manifest.repo}}/tree/{{image.objects.manifest.branch}}/{{image.objects.manifest.path}}" target="_blank">https://{{image.objects.manifest.repo}}/tree/{{image.objects.manifest.branch}}/{{image.objects.manifest.path}}</a></td></tr>
-        <tr><td class="bg-darken-1">Latest commit</td><td>coming soon...</td></tr>
-        <tr><td class="bg-darken-1">Commits</td><td>coming soon...</td></tr>
-        <tr><td class="bg-darken-1">Age</td><td>coming soon...</td></tr>
-        <tr><td class="bg-darken-1">Image tools</td><td>coming soon...</td></tr>
-        <tr><td class="bg-darken-1">Maintainers</td><td>coming soon...</td></tr>
-        <tr><td class="bg-darken-1">Issues</td><td>coming soon...</td></tr>
-        <tr><td class="bg-darken-1">Pull-request</td><td>coming soon...</td></tr>
+        <tr><td class="bg-darken-1">Repository</td><td>
+          <a href="https://{{image.objects.manifest.repo}}/tree/{{image.objects.manifest.branch}}/{{image.objects.manifest.path}}" target="_blank">
+            https://{{image.objects.manifest.repo}}/tree/{{image.objects.manifest.branch}}/{{image.objects.manifest.path}}
+          </a>
+        </td></tr>
+        <tr>
+          <td class="bg-darken-1">Latest commit</td>
+          <td am-time-ago="image.objects.github_repo.pushed_at" title="{{image.objects.github_repo.pushed_at}}">
+            {{image.objects.github_repo.pushed_at || "n/a"}}
+          </td></tr>
+        <tr><td class="bg-darken-1">Creation date</td>
+          <td am-time-ago="image.objects.github_repo.created_at" title={{image.objects.github_repo.created_at}}">
+            {{image.objects.github_repo.created_at || "n/a"}}
+          </td>
+        </tr>
+        <tr><td class="bg-darken-1">Maintainer</td><td><a href="{{image.objects.github_repo.owner.html_url}}" target="_blank">
+          <div class="sm-col"><img src="{{image.objects.github_repo.owner.avatar_url}}&s=16" /></div>
+          <div class="sm-col">{{image.objects.github_repo.owner.login}}</div>
+        </a></td></tr>
+        <tr><td class="bg-darken-1">Issues</td><td>
+          <a href="https://{{image.objects.manifest.repo}}/issues" target="_blank">
+            {{image.objects.github_repo.open_issues_count || "n/a"}}
+          </a>
+        </td></tr>
+        <!--<tr><td class="bg-darken-1">Commits</td><td>coming soon...</td></tr>-->
+        <!--<tr><td class="bg-darken-1">Age</td><td>coming soon...</td></tr>-->
+        <!--<tr><td class="bg-darken-1">Image tools</td><td>coming soon...</td></tr>-->
+        <!--<tr><td class="bg-darken-1">Pull-request</td><td>coming soon...</td></tr>-->
       </tbody>
       <thead class="bg-darken-2"><tr><th colspan="2">Scaleway API</th></tr></thead>
       <tbody>
         <tr><td class="bg-darken-1">Image Name</td><td>{{ image.objects.api.name }}</td></tr>
-        <tr><td class="bg-darken-1">Image UUID</td><td>{{ image.objects.api.id }}</td></tr>
-        <tr><td class="bg-darken-1">Image UUID</td><td><a href="https://cloud.scaleway.com/#/images/{{ image.objects.api.id }}">https://cloud.scaleway.com/#/images/{{ image.objects.api.id }}</a></td></tr>
-        <tr><td class="bg-darken-1">Creation date</td><td>{{ image.objects.api.creation_date }}</td></tr>
-        <tr><td class="bg-darken-1">Modification date</td><td>{{ image.objects.api.modification_date }}</td></tr>
+        <tr><td class="bg-darken-1">Image UUID</td><td>
+          <a href="https://cloud.scaleway.com/#/images/{{ image.objects.api.id }}">
+            {{ image.objects.api.id }}
+          </a>
+        </td></tr>
+        <tr><td class="bg-darken-1">Creation date</td>
+          <td am-time-ago="image.objects.api.creation_date" title="{{ image.objects.api.creation_date }}">{{ image.objects.api.creation_date }}</td>
+        </tr>
+        <tr><td class="bg-darken-1">Modification date</td>
+          <td am-time-ago="image.objects.api.modification_date" title="{{ image.objects.api.modification_date }}">{{ image.objects.api.modification_date }}</td>
+        </tr>
         <tr><td class="bg-darken-1">Arch</td><td>{{ image.objects.api.arch }}</td></tr>
-        <tr><td class="bg-darken-1">Root volume</td><td>coming soon...</td></tr>
-        <tr><td class="bg-darken-1">Bootscript</td><td>coming soon...</td></tr>
+        <tr><td class="bg-darken-1">Root volume</td><td>{{ image.objects.api.root_volume.size }}</td></tr>
+        <tr><td class="bg-darken-1">Bootscript</td><td><a href="#/bootscripts">{{ image.objects.api.default_bootscript.title }}</a></td></tr>
       </tbody>
       <thead class="bg-darken-2"><tr><th colspan="2">Manifest</th></tr></thead>
       <tbody>
@@ -45,7 +85,11 @@
       </tbody>
       <thead class="bg-darken-2"><tr><th colspan="2">Docker</th></tr></thead>
       <tbody>
-        <tr><td class="bg-darken-1">Image</td><td><a href="https://hub.docker.com/r/scaleway/{{ image.objects.manifest.name }}/" target="_blank">https://hub.docker.com/r/scaleway/{{ image.objects.manifest.name }}:{{ image.objects.manifest.tags[0] }}</a></td></tr>
+        <tr><td class="bg-darken-1">Image</td><td>
+          <a href="https://hub.docker.com/r/scaleway/{{ image.objects.manifest.name }}/" target="_blank">
+            https://hub.docker.com/r/scaleway/{{ image.objects.manifest.name }}:{{ image.objects.manifest.tags[0] }}
+          </a>
+        </td></tr>
         <tr><td class="bg-darken-1">Status</td><td>coming soon...</td></tr>
         <tr><td class="bg-darken-1">FROM</td><td>coming soon...</td></tr>
         <tr><td class="bg-darken-1">FROM status</td><td>coming soon...</td></tr>
