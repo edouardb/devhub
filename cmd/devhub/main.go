@@ -9,9 +9,12 @@ import (
 	"sync"
 	"time"
 
+	"golang.org/x/oauth2"
+
 	"github.com/Sirupsen/logrus"
 	"github.com/dustin/go-humanize"
 	"github.com/gin-gonic/gin"
+	"github.com/google/go-github/github"
 	"github.com/parnurzeal/gorequest"
 	"github.com/renstrom/fuzzysearch/fuzzy"
 	"github.com/shazow/memoizer"
@@ -21,28 +24,34 @@ import (
 	"github.com/scaleway/scaleway-cli/pkg/api"
 )
 
-var cache Cache
+var cache *Cache
 var memoize memoizer.Memoize
 var httpMutex sync.Mutex
 var badgeMutex sync.Mutex
 
 func init() {
 	memoize = memoizer.Memoize{memoizer.NewMemoryCache()}
+	cache = NewCache()
 }
 
 type Cache struct {
 	Mapping struct {
 		Images []*ImageMapping `json:"images"`
 	} `json:"mapping"`
-	Manifest *scwManifest.Manifest `json:"manifest"`
-	Api      struct {
+	Manifest       *scwManifest.Manifest         `json:"manifest"`
+	GithubRepos    map[string]*github.Repository `json:"github_repos"`
+	GithubLastRefs map[string]*github.Reference  `json:"github_last_references"`
+	Api            struct {
 		Images      *[]api.ScalewayImage      `json:"api_images"`
 		Bootscripts *[]api.ScalewayBootscript `json:"api_bootscripts"`
 	} `json:"api"`
 }
 
-func NewCache() Cache {
-	return Cache{}
+func NewCache() *Cache {
+	return &Cache{
+		GithubRepos:    make(map[string]*github.Repository, 0),
+		GithubLastRefs: make(map[string]*github.Reference, 0),
+	}
 }
 
 func (c *Cache) GetImageByName(name string) []*ImageMapping {
@@ -69,6 +78,8 @@ func (c *Cache) MapImages() {
 			ManifestName: manifestImage.FullName(),
 		}
 		imageMapping.Objects.Manifest = manifestImage
+		imageMapping.Objects.GitHubRepo = cache.GithubRepos[manifestImage.RepoPath()]
+		imageMapping.Objects.GitHubLastRef = cache.GithubLastRefs[manifestImage.RepoPath()]
 		manifestImageName := ImageCodeName(manifestImage.Name)
 		apiImages := c.Api.Images
 		for idx := range *apiImages {
@@ -93,8 +104,10 @@ type ImageMapping struct {
 	Found        int    `json:"found"`
 
 	Objects struct {
-		Api      *api.ScalewayImage `json:"api"`
-		Manifest *scwImage.Image    `json:"manifest"`
+		Api           *api.ScalewayImage `json:"api"`
+		Manifest      *scwImage.Image    `json:"manifest"`
+		GitHubRepo    *github.Repository `json:"github_repo"`
+		GitHubLastRef *github.Reference  `json:"github_last_ref"`
 	} `json:"objects"`
 }
 
@@ -154,9 +167,16 @@ func main() {
 		logrus.Fatalf("Failed to initialize Scaleway Api: %v", err)
 	}
 
-	go updateManifestCron(&cache)
-	go updateScwApiImages(Api, &cache)
-	go updateScwApiBootscripts(Api, &cache)
+	ts := oauth2.StaticTokenSource(
+		&oauth2.Token{AccessToken: os.Getenv("GITHUB_TOKEN")},
+	)
+	tc := oauth2.NewClient(oauth2.NoContext, ts)
+	gh := github.NewClient(tc)
+
+	go updateManifestCron(cache)
+	go updateScwApiImages(Api, cache)
+	go updateScwApiBootscripts(Api, cache)
+	go updateGitHub(gh, cache)
 
 	port := os.Getenv("PORT")
 	if port == "" {
@@ -328,6 +348,41 @@ func updateScwApiImages(Api *api.ScalewayAPI, cache *Cache) {
 		} else {
 			cache.Api.Images = images
 			logrus.Infof("Images fetched: %d images", len(*images))
+			cache.MapImages()
+		}
+		time.Sleep(5 * time.Minute)
+	}
+}
+
+func updateGitHub(gh *github.Client, cache *Cache) {
+	for {
+		logrus.Infof("Fetching GitHub...")
+		for cache.Manifest == nil || len(cache.Manifest.Images) == 0 {
+			time.Sleep(time.Second)
+		}
+		changes := 0
+		for _, image := range cache.Manifest.Images {
+			if _, found := cache.GithubRepos[image.RepoPath()]; !found {
+				changes++
+				repo, err := image.GithubGetRepo(gh)
+				if err != nil {
+					logrus.Warnf("Failed to fetch repo %q: %v", image.RepoPath(), err)
+				} else {
+					cache.GithubRepos[image.RepoPath()] = repo
+				}
+			}
+			if _, found := cache.GithubLastRefs[image.RepoPath()]; !found {
+				changes++
+				ref, err := image.GithubGetLastRef(gh)
+				if err != nil {
+					logrus.Warnf("Failed to fetch repo last reference %q: %v", image.RepoPath(), err)
+				} else {
+					cache.GithubLastRefs[image.RepoPath()] = ref
+				}
+			}
+			break
+		}
+		if changes > 0 {
 			cache.MapImages()
 		}
 		time.Sleep(5 * time.Minute)

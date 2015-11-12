@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/Sirupsen/logrus"
+	"github.com/google/go-github/github"
 )
 
 type Image struct {
@@ -23,6 +24,18 @@ func (i *Image) RepoHost() string {
 
 func (i *Image) RepoPath() string {
 	return strings.Join(strings.Split(i.Repo, "/")[1:], "/")
+}
+
+func (i *Image) GithubGetRepo(gh *github.Client) (*github.Repository, error) {
+	repoPath := strings.Split(i.Repo, "/")
+	repo, _, err := gh.Repositories.Get(repoPath[1], repoPath[2])
+	return repo, err
+}
+
+func (i *Image) GithubGetLastRef(gh *github.Client) (*github.Reference, error) {
+	repoPath := strings.Split(i.Repo, "/")
+	ref, _, err := gh.Git.GetRef(repoPath[1], repoPath[2], "heads/master")
+	return ref, err
 }
 
 func (i *Image) RawContentUrl(path string) (string, error) {
