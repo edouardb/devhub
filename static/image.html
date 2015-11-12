@@ -48,10 +48,15 @@
             {{image.objects.github_repo.open_issues_count || "n/a"}}
           </a>
         </td></tr>
+        <tr><td class="bg-darken-1">License</td><td>
+            <div class="sm-col">{{image.objects.github_repo.license.name}}</div>
+            <div class="sm-col-right"><img src="https://img.shields.io/github/license/{{image.objects.github_repo.full_name}}.svg" /></div>
+          </a>
+        </td></tr>
         <!--<tr><td class="bg-darken-1">Commits</td><td>coming soon...</td></tr>-->
         <!--<tr><td class="bg-darken-1">Age</td><td>coming soon...</td></tr>-->
         <!--<tr><td class="bg-darken-1">Image tools</td><td>coming soon...</td></tr>-->
-        <!--<tr><td class="bg-darken-1">Pull-request</td><td>coming soon...</td></tr>-->
+        <!--<tr><td class="bg-darken-1">Active pull-requests</td><td>coming soon...</td></tr>-->
       </tbody>
       <thead class="bg-darken-2"><tr><th colspan="2">Scaleway API</th></tr></thead>
       <tbody>
@@ -79,9 +84,9 @@
             {{tag}}
           </span>
         </td></tr>
-        <tr><td class="bg-darken-1">Vendor URL</td><td>coming soon...</td></tr>
-        <tr><td class="bg-darken-1">Documentation URL</td><td>coming soon...</td></tr>
-        <tr><td class="bg-darken-1">Other flags from Makefile</td><td>coming soon...</td></tr>
+        <!--<tr><td class="bg-darken-1">Vendor URL</td><td>coming soon...</td></tr>-->
+        <!--<tr><td class="bg-darken-1">Documentation URL</td><td>coming soon...</td></tr>-->
+        <!--<tr><td class="bg-darken-1">Other flags from Makefile</td><td>coming soon...</td></tr>-->
       </tbody>
       <thead class="bg-darken-2"><tr><th colspan="2">Docker</th></tr></thead>
       <tbody>
@@ -90,17 +95,24 @@
             https://hub.docker.com/r/scaleway/{{ image.objects.manifest.name }}:{{ image.objects.manifest.tags[0] }}
           </a>
         </td></tr>
-        <tr><td class="bg-darken-1">Status</td><td>coming soon...</td></tr>
-        <tr><td class="bg-darken-1">FROM</td><td>coming soon...</td></tr>
-        <tr><td class="bg-darken-1">FROM status</td><td>coming soon...</td></tr>
-        <tr><td class="bg-darken-1">Tags</td><td>coming soon...</td></tr>
+        <!--<tr><td class="bg-darken-1">Status</td><td>coming soon...</td></tr>-->
+        <!--<tr><td class="bg-darken-1">FROM</td><td>coming soon...</td></tr>-->
+        <!--<tr><td class="bg-darken-1">FROM status</td><td>coming soon...</td></tr>-->
+        <!--<tr><td class="bg-darken-1">Tags</td><td>coming soon...</td></tr>-->
       </tbody>
       <thead class="bg-darken-2"><tr><th colspan="2">Travis</th></tr></thead>
       <tbody>
-        <tr><td class="bg-darken-1">Status</td><td>coming soon...</td></tr>
-        <tr><td class="bg-darken-1">QA url</td><td>coming soon...</td></tr>
-        <tr><td class="bg-darken-1">Latest build</td><td>coming soon...</td></tr>
-        <tr><td class="bg-darken-1">Active PRs</td><td>coming soon...</td></tr>
+        <tr><td class="bg-darken-1">Status</td><td>
+          <div class="sm-col">&nbsp;</div>
+          <div class="sm-col-right"><img src="https://img.shields.io/travis/{{image.objects.github_repo.full_name}}.svg" /></div>
+          </a>
+        </td></tr>
+        <tr><td class="bg-darken-1">QA url</td><td>
+          <a href="https://github.com/scaleway/qa/tree/master/images/{{ image.objects.manifest.repo }}" target="_blank">
+            ./images/{{ image.objects.manifest.repo }}
+          </a>
+        </td></tr>
+        <!--<tr><td class="bg-darken-1">Latest build</td><td>coming soon...</td></tr>-->
       </tbody>
       <tbody>
     </table>
