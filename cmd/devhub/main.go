@@ -70,7 +70,9 @@ func (c *Cache) MapImages() {
 		}
 		imageMapping.Objects.Manifest = manifestImage
 		manifestImageName := ImageCodeName(manifestImage.Name)
-		for _, apiImage := range *c.Api.Images {
+		apiImages := c.Api.Images
+		for idx := range *apiImages {
+			apiImage := (*apiImages)[idx]
 			apiImageName := ImageCodeName(apiImage.Name)
 			if rankMatch := fuzzy.RankMatch(manifestImageName, apiImageName); rankMatch > -1 {
 				imageMapping.ApiUUID = apiImage.Identifier
