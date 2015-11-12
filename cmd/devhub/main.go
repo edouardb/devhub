@@ -380,7 +380,6 @@ func updateGitHub(gh *github.Client, cache *Cache) {
 					cache.GithubLastRefs[image.RepoPath()] = ref
 				}
 			}
-			break
 		}
 		if changes > 0 {
 			cache.MapImages()
