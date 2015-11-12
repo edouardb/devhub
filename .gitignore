@@ -1,3 +1,8 @@
+# gin
+cmd/devhub/bower_components
+cmd/devhub/gin-bin
+cmd/devhub/static
+
 # Compiled Object files, Static and Dynamic libs (Shared Objects)
 *.o
 *.a

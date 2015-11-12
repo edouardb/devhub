@@ -156,7 +156,11 @@ func main() {
 	go updateScwApiImages(Api, &cache)
 	go updateScwApiBootscripts(Api, &cache)
 
-	router.Run(":4242")
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8000"
+	}
+	router.Run(fmt.Sprintf(":%s", port))
 }
 
 func httpGetContent(url string) (string, error) {
