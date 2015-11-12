@@ -73,7 +73,7 @@
           <td am-time-ago="image.objects.api.modification_date" title="{{ image.objects.api.modification_date }}">{{ image.objects.api.modification_date }}</td>
         </tr>
         <tr><td class="bg-darken-1">Arch</td><td>{{ image.objects.api.arch }}</td></tr>
-        <tr><td class="bg-darken-1">Root volume</td><td>{{ image.objects.api.root_volume.size }}</td></tr>
+        <tr><td class="bg-darken-1">Root volume</td><td>{{ image.objects.api.root_volume.size | humanizeFilesize }}</td></tr>
         <tr><td class="bg-darken-1">Bootscript</td><td><a href="#/bootscripts">{{ image.objects.api.default_bootscript.title }}</a></td></tr>
       </tbody>
       <thead class="bg-darken-2"><tr><th colspan="2">Manifest</th></tr></thead>
