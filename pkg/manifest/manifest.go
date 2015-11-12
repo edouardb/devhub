@@ -37,7 +37,7 @@ func GetManifestByURL(manifestURL string) (*Manifest, error) {
 	for scanner.Scan() {
 		line := scanner.Text()
 		line = strings.TrimSpace(line)
-		if len(line) < 1 || line[0] == '#' {
+		if len(line) < 1 || strings.Index(line, "#") == 0 {
 			continue
 		}
 		cols := re.Split(line, -1)
