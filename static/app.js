@@ -10,11 +10,11 @@ devhubApp.controller('MainCtrl', function($scope, $route, $routeParams, $locatio
 devhubApp.config(function($routeProvider, $locationProvider) {
   $routeProvider
     .when('/images/:imageId', {
-      templateUrl: '/assets/image.html',
+      templateUrl: '/static/image.html',
       controller: 'ImageDetailCtrl'
     })
     .otherwise({
-      templateUrl: '/assets/home.html',
+      templateUrl: '/static/home.html',
       controller: 'HomeCtrl'
     });
   // $locationProvider.html5Mode(true);
