@@ -64,6 +64,17 @@ func (c *Cache) GetImageByName(name string) []*ImageMapping {
 	return found
 }
 
+func (c *Cache) GetBootscriptById(id string) []*api.ScalewayBootscript {
+	found := []*api.ScalewayBootscript{}
+
+	for _, bootscript := range *c.Api.Bootscripts {
+		if bootscript.Identifier == id {
+			found = append(found, &bootscript)
+		}
+	}
+	return found
+}
+
 func (c *Cache) MapImages() {
 	// FIXME: add mutex
 	if c.Manifest == nil || c.Api.Images == nil {
@@ -154,6 +165,7 @@ func main() {
 	router.GET("/api/images/:name/makefile", imageMakefileEndpoint)
 
 	router.GET("/api/bootscripts", bootscriptsEndpoint)
+	router.GET("/api/bootscripts/:id", bootscriptEndpoint)
 
 	router.GET("/api/cache", cacheEndpoint)
 
@@ -167,16 +179,20 @@ func main() {
 		logrus.Fatalf("Failed to initialize Scaleway Api: %v", err)
 	}
 
-	ts := oauth2.StaticTokenSource(
-		&oauth2.Token{AccessToken: os.Getenv("GITHUB_TOKEN")},
-	)
-	tc := oauth2.NewClient(oauth2.NoContext, ts)
-	gh := github.NewClient(tc)
+	if os.Getenv("GITHUB_TOKEN") != "" {
+		ts := oauth2.StaticTokenSource(
+			&oauth2.Token{AccessToken: os.Getenv("GITHUB_TOKEN")},
+		)
+		tc := oauth2.NewClient(oauth2.NoContext, ts)
+		gh := github.NewClient(tc)
+		go updateGitHub(gh, cache)
+	} else {
+		logrus.Errorf("GITHUB_TOKEN empty")
+	}
 
 	go updateManifestCron(cache)
 	go updateScwApiImages(Api, cache)
 	go updateScwApiBootscripts(Api, cache)
-	go updateGitHub(gh, cache)
 
 	port := os.Getenv("PORT")
 	if port == "" {
@@ -317,6 +333,26 @@ func imageEndpoint(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{
 			"error":  "Too much images are matching your request",
 			"images": images,
+		})
+	}
+}
+
+func bootscriptEndpoint(c *gin.Context) {
+	id := c.Param("id")
+	bootscripts := cache.GetBootscriptById(id)
+	switch len(bootscripts) {
+	case 0:
+		c.JSON(http.StatusNotFound, gin.H{
+			"error": "No such bootscript",
+		})
+	case 1:
+		c.JSON(http.StatusOK, gin.H{
+			"bootscript": bootscripts[0],
+		})
+	default:
+		c.JSON(http.StatusNotFound, gin.H{
+			"error":       "Too much bootscripts are matching your request",
+			"bootscripts": bootscripts,
 		})
 	}
 }

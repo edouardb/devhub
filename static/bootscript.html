@@ -1,0 +1,20 @@
+<section class="container">
+  <div class="overflow-scroll">
+    <h2 id="bootscript">{{ bootscript.title }}</h2>
+
+    <table class="table-light overflow-hidden bg-white border rounded">
+      <thead class="bg-darken-2"><tr><th colspan="2">Scaleway API</th></tr></thead>
+      <tbody>
+        <tr><td class="bg-darken-1">Title</td><td>{{ bootscript.title }}</td></tr>
+        <tr><td class="bg-darken-1">Id</td><td>{{ bootscript.id }}</td></tr>
+        <tr><td class="bg-darken-1">/proc/cmdline</td><td>{{ bootscript.bootcmdargs.value }}</td></tr>
+        <tr><td class="bg-darken-1">initrd</td><td>{{ bootscript.initrd.title }}</td></tr>
+        <tr><td class="bg-darken-1">kernel</td><td>{{ bootscript.kernel.title }}</td></tr>
+      </tbody>
+    </table>
+
+    <hr />
+    <button class="btn btn-outline bg-darken-4 white" ng-click="showRawAPI()">Raw API</button>
+    <pre ng-show="preRawAPI" class="bg-darken-2 round px2 py2">{{ bootscript | prettyJSON }}</pre>
+  </div>
+</section>

@@ -74,7 +74,7 @@
         </tr>
         <tr><td class="bg-darken-1">Arch</td><td>{{ image.objects.api.arch }}</td></tr>
         <tr><td class="bg-darken-1">Root volume</td><td>{{ image.objects.api.root_volume.size | humanBytes:0:10 }}</td></tr>
-        <tr><td class="bg-darken-1">Bootscript</td><td><a href="#/bootscripts">{{ image.objects.api.default_bootscript.title }}</a></td></tr>
+        <tr><td class="bg-darken-1">Bootscript</td><td><a href="#/bootscripts/{{image.objects.api.default_bootscript.id}}">{{ image.objects.api.default_bootscript.title }}</a></td></tr>
       </tbody>
       <thead class="bg-darken-2"><tr><th colspan="2">Manifest</th></tr></thead>
       <tbody>

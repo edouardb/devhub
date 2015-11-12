@@ -12,7 +12,7 @@
       </thead>
       <tbody>
         <tr ng:repeat="i in bootscripts">
-          <td class="py2"><b class="nowrap">{{i.title}}</b></td>
+          <td class="py2"><b class="nowrap"><a href="#/bootscripts/{{i.id}}">{{i.title}}</a></b></td>
           <td class="py2"><small><span class="nowrap inline-block p1 px1 black bg-silver rounded">{{i.kernel.title}}</span></small></td>
           <td class="py2"><small><span class="nowrap inline-block p1 px1 black bg-silver rounded">{{i.initrd.title}}</span></small></td>
           <td class="py2">

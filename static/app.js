@@ -17,6 +17,10 @@ devhubApp.config(function($routeProvider, $locationProvider) {
       templateUrl: '/static/bootscripts.html',
       controller: 'BootscriptListCtrl'
     })
+    .when('/bootscripts/:bootscriptId', {
+      templateUrl: '/static/bootscript.html',
+      controller: 'BootscriptDetailCtrl'
+    })
     .when('/images/:imageId', {
       templateUrl: '/static/image.html',
       controller: 'ImageDetailCtrl'
@@ -30,6 +34,17 @@ devhubApp.config(function($routeProvider, $locationProvider) {
       controller: 'HomeCtrl'
     });
   // $locationProvider.html5Mode(true);
+});
+
+devhubApp.controller('BootscriptDetailCtrl', function($scope, $http, $routeParams) {
+  $scope.name = "ImageDetailCtrl";
+  $scope.params = $routeParams;
+  $http.get('/api/bootscripts/' + $routeParams.bootscriptId).success(function (data) {
+    $scope.bootscript = data.bootscript;
+  });
+  $scope.showRawAPI = function() {
+    $scope.preRawAPI = true;
+  };
 });
 
 devhubApp.controller('ImageDetailCtrl', function($scope, $http, $routeParams) {
