@@ -6,7 +6,7 @@
         <tr>
           <th>Name</th>
           <th>Tags</th>
-          <th>Badges</th>
+          <!--<th>Badges</th>-->
           <th>Links</th>
         </tr>
       </thead>
@@ -22,9 +22,9 @@
               {{tag}}
             </span>
           </td>
-          <td>
+          <!--<td>
             <img src="/badges/images/{{i.manifest_name}}/scw-build.svg" />
-          </td>
+          </td>-->
           <td>
             <!--<a href="/api/images/{{i.objects.manifest.name}}:{{i.objects.manifest.tags[0]}}" class="btn btn-outline">API detail</a>-->
             <a href="https://{{i.objects.manifest.repo}}/tree/{{i.objects.manifest.branch}}/{{i.objects.manifest.path}}" class="btn btn-outline" target="_blank">GitHub</a>
