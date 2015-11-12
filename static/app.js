@@ -9,6 +9,18 @@ devhubApp.controller('MainCtrl', function($scope, $route, $routeParams, $locatio
 
 devhubApp.config(function($routeProvider, $locationProvider) {
   $routeProvider
+    .when('/images', {
+      templateUrl: '/static/images.html',
+      controller: 'ImageListCtrl'
+    })
+    .when('/bootscripts', {
+      templateUrl: '/static/bootscripts.html',
+      controller: 'BootscriptListCtrl'
+    })
+    .when('/images/:imageId', {
+      templateUrl: '/static/image.html',
+      controller: 'ImageDetailCtrl'
+    })
     .when('/images/:imageId', {
       templateUrl: '/static/image.html',
       controller: 'ImageDetailCtrl'
@@ -57,15 +69,19 @@ devhubApp.controller('ImageDetailCtrl', function($scope, $http, $routeParams) {
   };
 });
 
-devhubApp.controller('HomeCtrl', function($scope, $http, $routeParams) {
-  $scope.name = "HomeCtrl";
-  $scope.params = $routeParams;
+devhubApp.controller('ImageListCtrl', function($scope, $http, $routeParams) {
   $http.get('/api/images').success(function (data) {
     $scope.images = data.images;
   });
+});
+
+devhubApp.controller('BootscriptListCtrl', function($scope, $http, $routeParams) {
   $http.get('/api/bootscripts').success(function (data) {
     $scope.bootscripts = data.bootscripts;
   });
+});
+
+devhubApp.controller('HomeCtrl', function($scope, $http, $routeParams) {
 });
 
 devhubApp.filter('prettyJSON', function() {
