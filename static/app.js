@@ -1,4 +1,4 @@
-var devhubApp = angular.module('devhubApp', ['ngRoute']);
+var devhubApp = angular.module('devhubApp', ['ngRoute', 'angularMoment']);
 
 devhubApp.controller('MainCtrl', function($scope, $route, $routeParams, $location) {
   $scope.$route = $route;
