@@ -31,9 +31,8 @@
             </a>
           </td>
           <td class="py2">
-            <span class="inline py1 mr1 px1 black bg-silver rounded" ng:repeat="tag in i.objects.manifest.tags">
-              {{tag}}
-            </span>
+            <span ng-if="tag == 'latest'" class="inline-block mr1 py1 px1 white bg-green rounded" ng:repeat="tag in i.objects.manifest.tags">{{tag}}</span>
+            <span ng-if="tag != 'latest'" class="inline-block mr1 py1 px1 black bg-yellow rounded" ng:repeat="tag in i.objects.manifest.tags">{{tag}}</span>
           </td>
           <td am-time-ago="i.objects.api.creation_date" title="{{ i.objects.api.creation_date }}">
             {{i.objects.api.creation_date}}
@@ -71,9 +70,8 @@
             </a>
           </td>
           <td class="py2">
-            <span class="inline py1 mr1 px1 black bg-silver rounded" ng:repeat="tag in i.objects.manifest.tags">
-              {{tag}}
-            </span>
+            <span ng-if="tag == 'latest'" class="inline-block mr1 py1 px1 white bg-green rounded" ng:repeat="tag in i.objects.manifest.tags">{{tag}}</span>
+            <span ng-if="tag != 'latest'" class="inline-block mr1 py1 px1 black bg-yellow rounded" ng:repeat="tag in i.objects.manifest.tags">{{tag}}</span>
           </td>
           <td>
             <!--<a href="/api/images/{{i.objects.manifest.name}}:{{i.objects.manifest.tags[0]}}" class="btn btn-outline">API detail</a>-->

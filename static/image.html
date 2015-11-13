@@ -80,9 +80,8 @@
       <tbody>
         <tr><td class="bg-darken-1">Manifest Name</td><td>{{ image.objects.manifest.name }}</td></tr>
         <tr><td class="bg-darken-1">Manifest Tags</td><td>
-          <span class="inline py0 mr1 px1 black bg-silver rounded" ng:repeat="tag in image.objects.manifest.tags">
-            {{tag}}
-          </span>
+          <span ng-if="tag == 'latest'" class="inline-block mr1 py1 px1 white bg-green rounded" ng:repeat="tag in image.objects.manifest.tags">{{tag}}</span>
+          <span ng-if="tag != 'latest'" class="inline-block mr1 py1 px1 black bg-yellow rounded" ng:repeat="tag in image.objects.manifest.tags">{{tag}}</span>
         </td></tr>
         <!--<tr><td class="bg-darken-1">Vendor URL</td><td>coming soon...</td></tr>-->
         <!--<tr><td class="bg-darken-1">Documentation URL</td><td>coming soon...</td></tr>-->
