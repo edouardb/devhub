@@ -4,15 +4,15 @@
     <table class="table-light overflow-hidden bg-white border rounded">
       <thead class="bg-darken-1">
         <tr>
-          <th>Name</th>
-          <th>Tags</th>
-          <th>Latest build</th>
+          <th><a href="" ng-click="orderByField='manifest_name'; reverseSort=!reverseSort">Name</a></th>
+          <th><a href="" ng-click="orderByField='objects.manifest.tags[0]'; reverseSort=!reverseSort">Tags</a></th>
+          <th><a href="" ng-click="orderByField='objects.api.creation_date'; reverseSort=!reverseSort">Latest build</a></th>
           <!--<th>Badges</th>-->
           <th>Links</th>
         </tr>
       </thead>
       <tbody>
-        <tr ng:repeat="i in images | orderBy:'-objects.api.creation_date'" ng:if="i.objects.api.creation_date">
+        <tr ng:repeat="i in images | orderBy:orderByField:reverseSort" ng:if="i.objects.api.creation_date">
           <td class="py2">
             <a href="#/images/{{i.manifest_name}}">
               <b>{{i.objects.manifest.name}}</b>:{{i.objects.manifest.tags[0]}}
@@ -46,15 +46,13 @@
     <table class="table-light overflow-hidden bg-white border rounded">
       <thead class="bg-darken-1">
         <tr>
-          <th>Name</th>
-          <th>Tags</th>
-          <!--<th>Latest build</th>-->
-          <!--<th>Badges</th>-->
+          <th><a href="" ng-click="orderByField='manifest_name'; reverseSort=!reverseSort">Name</a></th>
+          <th><a href="" ng-click="orderByField='objects.manifest.tags[0]'; reverseSort=!reverseSort">Tags</a></th>
           <th>Links</th>
         </tr>
       </thead>
       <tbody>
-        <tr ng:repeat="i in images" ng:if="!i.objects.api.creation_date">
+        <tr ng:repeat="i in images | orderBy:orderByField:reverseSort" ng:if="!i.objects.api.creation_date">
           <td class="py2">
             <a href="#/images/{{i.manifest_name}}">
               <b>{{i.objects.manifest.name}}</b>:{{i.objects.manifest.tags[0]}}

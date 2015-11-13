@@ -85,12 +85,16 @@ devhubApp.controller('ImageDetailCtrl', function($scope, $http, $routeParams) {
 });
 
 devhubApp.controller('ImageListCtrl', function($scope, $http, $routeParams) {
+  $scope.orderByField = 'objects.api.creation_date';
+  $scope.reverseSort = true;
   $http.get('/api/images').success(function (data) {
     $scope.images = data.images;
   });
 });
 
 devhubApp.controller('BootscriptListCtrl', function($scope, $http, $routeParams) {
+  $scope.orderByField = 'title';
+  $scope.reverseSort = true;
   $http.get('/api/bootscripts').success(function (data) {
     $scope.bootscripts = data.bootscripts;
   });

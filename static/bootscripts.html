@@ -4,14 +4,14 @@
     <table class="table-light overflow-hidden bg-white border rounded">
       <thead class="bg-darken-1">
         <tr>
-          <th>Name</th>
-          <th>Kernel</th>
-          <th>Initrd</th>
-          <th>/proc/cmdline</th>
+          <th><a href="" ng-click="orderByField='title'; reverseSort=!reverseSort">Name</a></th>
+          <th><a href="" ng-click="orderByField='kernel.title'; reverseSort=!reverseSort">Kernel</a></th>
+          <th><a href="" ng-click="orderByField='initrd.title'; reverseSort=!reverseSort">Initrd</a></th>
+          <th><a href="" ng-click="orderByField='bootcmdargs.value'; reverseSort=!reverseSort">/proc/cmdline</a></th>
         </tr>
       </thead>
       <tbody>
-        <tr ng:repeat="i in bootscripts">
+        <tr ng:repeat="i in bootscripts | orderBy:orderByField:reverseSort">
           <td class="py2"><b class="nowrap"><a href="#/bootscripts/{{i.id}}">{{i.title}}</a></b></td>
           <td class="py2"><small><span class="nowrap inline-block p1 px1 black bg-silver rounded">{{i.kernel.title}}</span></small></td>
           <td class="py2"><small><span class="nowrap inline-block p1 px1 black bg-silver rounded">{{i.initrd.title}}</span></small></td>
