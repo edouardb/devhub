@@ -1,6 +1,11 @@
 <section class="container">
   <div class="overflow-scroll">
-    <h2 id="image">{{ image.manifest_name }}</h2>
+    <div class="sm-col py1">
+      <h2 id="image">{{ image.manifest_name }}</h2>
+    </div>
+    <div class="sm-col-right py2">
+      <img class="circle" src="https://cloud.scaleway.com/images/image_logos/{{image.objects.manifest.name}}.png" onerror="this.src='https://cloud.scaleway.com/images/69f046ad.image_default.jpg'" height="50" />
+    </div>
 
     <table class="table-light overflow-hidden bg-white border rounded">
       <thead class="bg-darken-2"><tr><th colspan="2">Devhub</th></tr></thead>
