@@ -5,9 +5,9 @@
     <table class="table-light overflow-hidden bg-white border rounded">
       <thead class="bg-darken-2"><tr><th colspan="2">Scaleway API</th></tr></thead>
       <tbody>
-        <tr><td class="bg-darken-1">Title</td><td>{{ bootscript.title }}</td></tr>
+        <tr><td class="bg-darken-1">Title</td><td ng-bind-html="bootscript.title | addLabels"></td></tr>
         <tr><td class="bg-darken-1">Id</td><td>{{ bootscript.id }}</td></tr>
-        <tr><td class="bg-darken-1">/proc/cmdline</td><td>{{ bootscript.bootcmdargs.value }}</td></tr>
+        <tr><td class="bg-darken-1">/proc/cmdline</td><td>{{ bootscript.bootcmdargs.value.replace('LINUX_COMMON ', '') }}</td></tr>
         <tr><td class="bg-darken-1">initrd</td><td>{{ bootscript.initrd.title }}</td></tr>
         <tr><td class="bg-darken-1">kernel</td><td>{{ bootscript.kernel.title }}</td></tr>
       </tbody>

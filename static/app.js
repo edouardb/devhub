@@ -1,4 +1,4 @@
-var devhubApp = angular.module('devhubApp', ['ngRoute', 'angularMoment']);
+var devhubApp = angular.module('devhubApp', ['ngRoute', 'angularMoment', 'ngSanitize']);
 
 devhubApp.controller('MainCtrl', function($scope, $route, $routeParams, $location) {
   $scope.$route = $route;
@@ -111,6 +111,18 @@ devhubApp.filter('prettyJSON', function() {
     return json;
   }
   return prettyPrintJson;
+});
+
+devhubApp.filter('addLabels', function() {
+  return function(text) {
+
+    text = text.replace(/\(?beta\)?/i, '<span class="inline-block px1 white bg-black rounded">beta</span>');
+    text = text.replace(/\(?stable\)?/i, '<span class="inline-block px1 white bg-green rounded">stable</span>');
+    text = text.replace(/\(?lts\)?/i, '<span class="inline-block px1 white bg-blue rounded">lts</span>');
+    text = text.replace(/\(?latest\)?/i, '<span class="inline-block px1 white bg-purple rounded">latest</span>');
+
+    return text;
+  };
 });
 
 devhubApp.filter('humanBytes', function() {
