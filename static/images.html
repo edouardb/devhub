@@ -1,6 +1,18 @@
 <section class="container">
   <div class="overflow-scroll">
-    <h3 id="images">Released images</h3>
+
+    <div class="py0">
+      <div class="sm-col py0">
+        <h3 id="bootscripts">Released images</h3>
+      </div>
+      <div class="sm-col-right py2">
+        <form>
+          <label for="search">Search</label>
+          <input id="search" type="text" ng-model="searchKeyword" class="field" />
+        </form>
+      </div>
+    </div>
+
     <table class="table-light overflow-hidden bg-white border rounded">
       <thead class="bg-darken-1">
         <tr>
@@ -12,7 +24,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr ng:repeat="i in images | orderBy:orderByField:reverseSort" ng:if="i.objects.api.creation_date">
+        <tr ng:repeat="i in images | filter:searchKeyword | orderBy:orderByField:reverseSort" ng:if="i.objects.api.creation_date">
           <td class="py2">
             <a href="#/images/{{i.manifest_name}}">
               <b>{{i.objects.manifest.name}}</b>:{{i.objects.manifest.tags[0]}}
@@ -52,7 +64,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr ng:repeat="i in images | orderBy:orderByField:reverseSort" ng:if="!i.objects.api.creation_date">
+        <tr ng:repeat="i in images | filter:searchKeyword | orderBy:orderByField:reverseSort" ng:if="!i.objects.api.creation_date">
           <td class="py2">
             <a href="#/images/{{i.manifest_name}}">
               <b>{{i.objects.manifest.name}}</b>:{{i.objects.manifest.tags[0]}}
