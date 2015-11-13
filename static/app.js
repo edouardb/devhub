@@ -1,4 +1,4 @@
-var devhubApp = angular.module('devhubApp', ['ngRoute', 'angularMoment', 'ngSanitize']);
+var devhubApp = angular.module('devhubApp', ['ngRoute', 'angularMoment', 'ngSanitize', 'angular-loading-bar', 'ngAnimate']);
 
 devhubApp.controller('MainCtrl', function($scope, $route, $routeParams, $location) {
   $scope.$route = $route;
